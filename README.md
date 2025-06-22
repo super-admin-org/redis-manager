@@ -2,8 +2,8 @@ Redis manager for super-admin
 ========================
 
 [![StyleCI](https://styleci.io/repos/508859240/shield?branch=main)](https://styleci.io/repos/508859240)
-[![Packagist](https://img.shields.io/github/license/super-admin-org/redis-manager.svg?style=flat-square&color=brightgreen)](https://packagist.org/packages/super-admin-ext/redis-manager)
-[![Total Downloads](https://img.shields.io/packagist/dt/super-admin-ext/redis-manager.svg?style=flat-square)](https://packagist.org/packages/super-admin-ext/redis-manager)
+[![Packagist](https://img.shields.io/github/license/super-admin-org/redis-manager.svg?style=flat-square&color=brightgreen)](https://packagist.org/packages/super-admin-org/redis-manager)
+[![Total Downloads](https://img.shields.io/packagist/dt/super-admin-org/redis-manager.svg?style=flat-square)](https://packagist.org/packages/super-admin-org/redis-manager)
 [![Pull request welcome](https://img.shields.io/badge/pr-welcome-green.svg?style=flat-square)]()
 
 
@@ -16,7 +16,7 @@ Redis manager for super-admin
 ## Installation
 
 ```
-$ composer require super-admin-ext/redis-manager
+$ composer require super-admin-org/redis-manager
 
 $ php artisan admin:import redis-manager
 ```
