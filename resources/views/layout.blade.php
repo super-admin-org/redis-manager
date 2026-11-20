@@ -1,18 +1,18 @@
 <div class="row redis-manager">
     <style>
-        .redis-manager .btn-card-tool .icon-minus,
-        .redis-manager .btn-card-tool.collapsed .icon-plus{
+        .redis-manager .redis-card-tool .icon-minus,
+        .redis-manager .redis-card-tool.collapsed .icon-plus{
             display:inline-block;
         }
-        .redis-manager .btn-card-tool.collapsed .icon-minus,
-        .redis-manager .btn-card-tool .icon-plus{
+        .redis-manager .redis-card-tool.collapsed .icon-minus,
+        .redis-manager .redis-card-tool .icon-plus{
             display:none;
         }
         .redis-manager .nav-link{
             border-left:3px solid transparent;
         }
         .redis-manager .nav-link.active{
-            border-left:3px solid var(--bs-primary);
+            border-left:3px solid var(--sa-primary, var(--bs-primary));
             background: rgba(0,0,0,0.02);
         }
         .redis-manager .card-footer {
@@ -21,39 +21,40 @@
     </style>
 
     <div class="col-md-3">
-        <div class="card with-border">
-            <div class="card-header with-border">
+        <div class="card">
+            <div class="card-header">
                 <h3 class="card-title">Connections</h3>
 
                 <div class="card-tools">
-                    <button type="button" class="btn btn-card-tool" data-bs-toggle="collapse" data-bs-target="#connections-body" >
+                    <button type="button" class="btn btn-sm btn-light redis-card-tool" data-bs-toggle="collapse" data-bs-target="#connections-body" >
                         <i class="icon-minus"></i>
                         <i class="icon-plus"></i>
                     </button>
                 </div>
             </div>
-            <div class="card-body no-padding collapse show p-0" id="connections-body">
+            <div class="card-body p-0 collapse show p-0" id="connections-body">
                 <ul class="nav flex-column">
                     @foreach($connections as $name => $connection)
-						@if(!empty($connection['host']))
                         <li class="nav-item">
-                            <a class="nav-link @if($name == $conn)active @endif" href=" {{ route('redis-index', ['conn' => $name]) }}">
-                                <i class="icon-database"></i> {{ $name }}  &nbsp;&nbsp;<small>[{{ $connection['host'].':'.$connection['port'] }}]</small>
+                            <a class="nav-link @if($name == $conn)active @endif" href="{{ route('redis-index', ['conn' => $name]) }}">
+                                <i class="icon-database"></i> {{ $name }}
+                                @if(!empty($connection['host']))
+                                    <small class="text-muted ms-1">[{{ $connection['host'] }}:{{ $connection['port'] ?? 6379 }}]</small>
+                                @endif
                             </a>
                         </li>
-						@endif
                     @endforeach
                 </ul>
             </div>
             <!-- /.card-body -->
         </div>
 
-        <div class="card card-default collapsed-card mt-4">
-            <div class="card-header with-border">
+        <div class="card mt-4">
+            <div class="card-header">
                 <h3 class="card-title">Connection <small><code>{{ $conn }}</code></small></h3>
 
                 <div class="card-tools pull-right">
-                    <button type="button" class="btn btn-card-tool" data-bs-toggle="collapse" data-bs-target="#connection-details" >
+                    <button type="button" class="btn btn-sm btn-light redis-card-tool" data-bs-toggle="collapse" data-bs-target="#connection-details" >
                         <i class="icon-minus"></i>
                         <i class="icon-plus"></i>
                     </button>
@@ -64,10 +65,10 @@
             <div class="card-body collapse show p-0" id="connection-details">
                 <div class="table-responsive">
                     <table class="table table-striped">
-                        @foreach($connections[$conn] as $name => $value)
+                        @foreach($details as $name => $value)
                             <tr>
                                 <td width="160px">{{ $name }}</td>
-                                <td><span class="label label-primary">{{ is_array($value) ? json_encode($value) : $value }}</span></td>
+                                <td><span class="badge bg-primary">{{ is_array($value) ? json_encode($value) : $value }}</span></td>
                             </tr>
                         @endforeach
                     </table>
@@ -77,12 +78,12 @@
             <!-- /.card-body -->
         </div>
 
-        <div class="card with-border mt-4">
-            <div class="card-header with-border">
+        <div class="card mt-4">
+            <div class="card-header">
                 <h3 class="card-title">Information</h3>
 
                 <div class="card-tools pull-right">
-                    <button type="button" class="btn btn-card-tool" data-bs-toggle="collapse" data-bs-target="#connection-info" >
+                    <button type="button" class="btn btn-sm btn-light redis-card-tool" data-bs-toggle="collapse" data-bs-target="#connection-info" >
                         <i class="icon-minus"></i>
                         <i class="icon-plus"></i>
                     </button>
@@ -102,7 +103,7 @@
                         <div id="collapse{{ $part }}" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordion">
                             <div class="accordion-body p-0">
                                 <div class="table-responsive">
-                                    <table class="table table-striped no-margin">
+                                    <table class="table table-striped m-0">
                                         @foreach($detail as $key => $value)
                                             <tr>
                                                 <td>{{ $key }}</td>
@@ -110,7 +111,7 @@
                                                     @if(is_array($value))
                                                         <pre><code>{{ json_encode($value, JSON_PRETTY_PRINT) }}</code></pre>
                                                     @else
-                                                        <span class="label label-primary">{{ $value }}</span>
+                                                        <span class="badge bg-primary">{{ $value }}</span>
                                                     @endif
                                                 </td>
                                             </tr>

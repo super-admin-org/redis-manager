@@ -3,14 +3,14 @@
 @section('page')
 
 
-<div class="card card-primary">
-    <div class="card-header with-border">
+<div class="card">
+    <div class="card-header">
         <h3 class="card-title">Redis Console</h3> <small></small>
     </div>
     <div class="card-body chat" id="console-card" style="height:calc(100vh - 280px);"></div>
-    <div class="card-footer with-border">
+    <div class="card-footer">
         <div class="input-group">
-            <input class="form-control input-lg" id="console-query" placeholder="Type command">
+            <input class="form-control" id="console-query" placeholder="Type command">
             <div class="btn-group">
                 <button type="button" class="btn btn-primary btn-lg" id="console-send"><i class="icon-paper-plane"></i></button>
                 <button type="button" class="btn btn-warning btn-lg" id="console-clear"><i class="icon-trash"></i></button>
@@ -84,13 +84,25 @@
             };
             admin.ajax.post(url,data,function(response){
 
+                // The server escapes the result (VarDumper HTML); the typed command is added as text.
                 var data = response.data;
                 history.push(input.value);
                 var card = document.querySelector('#console-card');
-                //var connection = document.querySelector('#connections').value;
-                var connection = 'unknown';
-                card.innerHTML += '<div class="item"><small class="badge bg-secondary">'+connection+' - '+input.value+"<\/small><\/div>";
-                card.innerHTML += '<div class="item">'+data+"<\/div>";
+
+                var command = document.createElement('div');
+                command.className = 'item';
+                var badge = document.createElement('small');
+                badge.className = 'badge bg-secondary';
+                badge.textContent = '{{ $conn }} > ' + input.value;
+                command.appendChild(badge);
+                card.appendChild(command);
+
+                var result = document.createElement('div');
+                result.className = 'item';
+                result.innerHTML = data;
+                card.appendChild(result);
+                card.scrollTop = card.scrollHeight;
+
                 input.value = '';
             });
         };

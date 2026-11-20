@@ -2,31 +2,31 @@
 
 @section('page')
 
-<div class="card card-primary">
-    <div class="card-header with-border">
+<div class="card">
+    <div class="card-header">
         <h3 class="card-title">Connection: {{ $conn }}</h3> <small></small>
 
         <div class="card-tools pull-right">
-            <button type="button" class="btn btn-card-tool" data-bs-toggle="collapse" data-bs-target="#redis-page" >
+            <button type="button" class="btn btn-sm btn-light redis-card-tool" data-bs-toggle="collapse" data-bs-target="#redis-page" >
                 <i class="icon-minus"></i>
                 <i class="icon-plus"></i>
             </button>
         </div>
     </div>
 
-    <form class="form-horizontal" method="get" action="{{ route('redis-index') }}" pjax-container>
+    <form class="" method="get" action="{{ route('redis-index') }}" pjax-container>
         <div class="card-body collapse show" id="redis-page">
             <div class="row">
-                <label for="preview" class="col-sm-2 control-label">Using prefix</label>
+                <label for="preview" class="col-sm-2 form-label">Using prefix</label>
                 <div class="col-sm-9">
                     <div class="form-control disabled" style="background:#F2F2F2">{{$prefix}}</div>
                 </div>
             </div>
             <div class="row">
-                <label for="inputPattern" class="col-sm-2 control-label">Pattern</label>
+                <label for="inputPattern" class="col-sm-2 form-label">Pattern</label>
 
                 <div class="col-sm-9">
-                    <input class="form-control input-sm" name="pattern" id="inputPattern" value="{{ request('pattern', '*')}}">
+                    <input class="form-control form-control-sm" name="pattern" id="inputPattern" value="{{ request('pattern', '*')}}">
                 </div>
             </div>
 
@@ -37,15 +37,20 @@
                     <button type="submit" class="btn btn-primary btn-sm me-auto"><i class="icon-search"></i>&nbsp;&nbsp;Search</button>
 
                     <div class="pull-right">
-                        <a class="btn btn-danger btn-sm key-delete-multi"><i class="icon-trash"></i>&nbsp;&nbsp;Delete</a>
+                        @if($readOnly)
+                            <span class="badge bg-secondary me-2"><i class="icon-lock"></i> read-only</span>
+                        @else
+                            <a class="btn btn-danger btn-sm key-delete-multi"><i class="icon-trash"></i>&nbsp;&nbsp;Delete</a>
+                        @endif
 
                         <a class="btn btn-warning btn-sm" href="{{ route('redis-console', ['conn' => $conn]) }}"><i class="icon-terminal"></i>&nbsp;&nbsp;Console</a>
 
+                        @if(! $readOnly)
                         <div class="btn-group btn-group-sm">
                             <button type="button" class="btn btn-success"><i class="icon-plus"></i>&nbsp;&nbsp;Create</button>
                             <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown">
-                                <span class="caret"></span>
-                                <span class="sr-only">Toggle Dropdown</span>
+                                <span class=""></span>
+                                <span class="visually-hidden">Toggle Dropdown</span>
                             </button>
                             <ul class="dropdown-menu" role="menu">
                                 <li><a class="dropdown-item" href="{{ route('redis-create-key', ['conn' => $conn, 'type' => 'string']) }}">string</a></li>
@@ -55,6 +60,7 @@
                                 <li><a class="dropdown-item" href="{{ route('redis-create-key', ['conn' => $conn, 'type' => 'zset']) }}">zset</a></li>
                             </ul>
                         </div>
+                        @endif
 
                     </div>
                 </div>
@@ -64,7 +70,7 @@
         <!-- /.card-footer -->
     </form>
 
-    <hr class="no-margin">
+    <hr class="m-0">
 
     <!-- /.card-header -->
     <div class="card-body table-responsive">
@@ -88,8 +94,10 @@
                     <td>{{ $key['ttl'] }}</td>
                     <td>
                         <a href="{{ route('redis-edit-key', ['key' => $key['key'], 'conn' => $conn]) }}"><i class="icon-edit"></i></a>
-                        &nbsp;
-                        <a class="key-delete" data-key="{{ $key['key'] }}"><i class="icon-trash"></i></a>
+                        @if(! $readOnly)
+                            &nbsp;
+                            <a class="key-delete" data-key="{{ $key['key'] }}"><i class="icon-trash"></i></a>
+                        @endif
                     </td>
                 </tr>
             @endforeach
@@ -98,10 +106,22 @@
         </table>
 
         @if (empty($keys))
-            <div class="text-center" style="padding: 20px;">
-                Empty list or set.
+            <div class="text-center text-muted py-3">
+                No keys match <code>{{ $pattern }}</code>{{ request('cursor', '0') !== '0' ? ' on this page' : '' }}.
             </div>
         @endif
+
+        <div class="d-flex justify-content-between align-items-center small text-muted">
+            <span>{{ count($keys) }} key(s) on this page</span>
+            <span>
+                @if(request('cursor', '0') !== '0')
+                    <a class="btn btn-light btn-sm" href="{{ route('redis-index', ['conn' => $conn, 'pattern' => $pattern, 'count' => $count]) }}">First page</a>
+                @endif
+                @if($nextCursor !== '0')
+                    <a class="btn btn-light btn-sm" href="{{ route('redis-index', ['conn' => $conn, 'pattern' => $pattern, 'count' => $count, 'cursor' => $nextCursor]) }}">Next page <i class="icon-chevron-right"></i></a>
+                @endif
+            </span>
+        </div>
 
     </div>
     <!-- /.card-body -->

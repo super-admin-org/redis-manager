@@ -1,35 +1,52 @@
-Redis manager for super-admin
-========================
+Redis manager for Super Admin
+=============================
 
-[![StyleCI](https://styleci.io/repos/508859240/shield?branch=main)](https://styleci.io/repos/508859240)
-[![Packagist](https://img.shields.io/github/license/super-admin-org/redis-manager.svg?style=flat-square&color=brightgreen)](https://packagist.org/packages/super-admin-org/redis-manager)
-[![Total Downloads](https://img.shields.io/packagist/dt/super-admin-org/redis-manager.svg?style=flat-square)](https://packagist.org/packages/super-admin-org/redis-manager)
-[![Pull request welcome](https://img.shields.io/badge/pr-welcome-green.svg?style=flat-square)]()
+Browse the keys of your Redis connections page by page, edit strings, lists, sets, sorted sets and hashes, set TTLs, delete keys and run Redis commands from the admin panel.
 
+**Documentation:** https://super-admin.org/laravel/extension-redis-manager/
 
-
-## Screenshot
-
-![extension-redis-manager](https://user-images.githubusercontent.com/86517067/176555243-be034c34-92b4-4b60-8f32-89dd0432be64.png)
-
+Requirements: PHP 8.0+, Laravel 8 – 13, Super Admin 1.x. Works with both Redis clients Laravel supports: **phpredis** (the default) and **predis**.
 
 ## Installation
 
+```bash
+composer require super-admin-org/redis-manager
+php artisan admin:import redis-manager
 ```
-$ composer require super-admin-org/redis-manager
 
-$ php artisan admin:import redis-manager
-```
-Open `http://your-host/admin/redis` in your browser.
+Open `/admin/redis`.
 
-## Debugging
-When error: `Class "Redis" not found` try changing to predis instead.
+## Configuration
 
-in `config/database.php` or .env set REDIS_CLIENT to 'predis';
 ```php
-   'client' => env('REDIS_CLIENT', 'predis'),
+// config/admin.php
+'extensions' => [
+    'redis-manager' => [
+        'read_only'  => false,   // true: browse only, no create/edit/delete, console limited to read commands
+        'scan_count' => 50,      // keys per page
+        // Commands the console refuses. The default list blocks FLUSHALL, FLUSHDB, CONFIG,
+        // SHUTDOWN, DEBUG, MODULE, REPLICAOF, SAVE, KEYS, SCRIPT, ACL, CLUSTER, MONITOR, ...
+        // 'disabled_commands' => [...],
+    ],
+],
+```
+
+Connection passwords are never shown in the panel.
+
+## Troubleshooting
+
+| Message | Fix |
+|---|---|
+| Cannot connect ... `Class "Redis" not found` | Install the PHP redis extension, or set `REDIS_CLIENT=predis` and `composer require predis/predis`. |
+| Cannot connect ... `Connection refused` | Start Redis or fix `REDIS_HOST` / `REDIS_PORT` / `REDIS_PASSWORD`. |
+
+## Tests
+
+```bash
+composer install
+composer test
 ```
 
 License
-------------
+-------
 Licensed under [The MIT License (MIT)](LICENSE).

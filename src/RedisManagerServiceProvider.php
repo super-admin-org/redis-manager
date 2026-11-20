@@ -11,7 +11,12 @@ class RedisManagerServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'super-admin-redis-manager');
+        // Template-aware: <views>/<template>/ and <template>/extensions/super-admin-redis-manager/ override <views>/.
+        if (class_exists(\SuperAdmin\Admin\Template\TemplateManager::class)) {
+            \SuperAdmin\Admin\Facades\Admin::template()->extensionViews('super-admin-redis-manager', __DIR__.'/../resources/views');
+        } else {
+            $this->loadViewsFrom(__DIR__.'/../resources/views', 'super-admin-redis-manager');
+        }
 
         RedisManager::boot();
     }
