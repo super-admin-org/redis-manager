@@ -7,7 +7,12 @@
         "redis",
         "manager"
     ],
-    "homepage": "https://github.com/super-admin-org/redis-manager",
+    "homepage": "https://super-admin.org/laravel/extension-redis-manager/",
+    "support": {
+        "docs": "https://super-admin.org/laravel/extension-redis-manager/",
+        "issues": "https://github.com/super-admin-org/redis-manager/issues",
+        "source": "https://github.com/super-admin-org/redis-manager"
+    },
     "license": "MIT",
     "authors": [
         {
@@ -18,7 +23,7 @@
     "require": {
         "php": "^8.0",
         "illuminate/support": "^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
-        "super-admin-org/super-admin": "^1.0",
+        "super-admin-org/super-admin": "^1.0|^2.0",
         "predis/predis": "^1.1|^2.0|^3.0"
     },
     "require-dev": {
